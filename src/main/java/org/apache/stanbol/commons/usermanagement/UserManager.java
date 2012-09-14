@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -16,12 +19,17 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 
-//should this become a rest service?
 @Component
 @Service(UserManager.class)
+@Path("user-management")
 public class UserManager {
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	private LockableMGraph systemGraph;
+	
+	@GET
+	public String index() {
+		return "hello";
+	}
 	
 	public Set<GraphNode> getUsers() {
 		return getResourcesOfType(FOAF.Agent);

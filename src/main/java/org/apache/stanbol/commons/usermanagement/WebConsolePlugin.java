@@ -2,12 +2,16 @@ package org.apache.stanbol.commons.usermanagement;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
@@ -46,10 +50,19 @@ public class WebConsolePlugin extends
 		for (GraphNode user: userManager.getUsers()) {
 			renderUser(pw, user);
 		}
+		renderUserForm(pw, new GraphNode(new BNode(), new SimpleMGraph()));
 	}
 
 	private void renderUser(PrintWriter pw, GraphNode user) {
-		pw.write("<p> User:"+user.getLiterals(PLATFORM.userName).next()+"</p>");
+		pw.write("<p> User:"+user.getLiterals(PLATFORM.userName).next().getLexicalForm()+"</p>");
+	}
+	
+	private void renderUserForm(PrintWriter pw, GraphNode user) {
+		Iterator<Literal> userNames = user.getLiterals(PLATFORM.userName);
+		String currentUserName = userNames.hasNext()? userNames.next().getLexicalForm() : "new-user";
+		pw.write("<form action=\"edit?user="+currentUserName+"\">");
+		pw.write("<input type=\"text\" name=\""+currentUserName+"\">");
+		pw.write("</form>");
 	}
 
 	public void activateBundle(BundleContext bundleContext) {
