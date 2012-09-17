@@ -12,6 +12,7 @@ import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -29,6 +30,12 @@ public class UserManager {
 	@GET
 	public String index() {
 		return "hello";
+	}
+	
+	@GET
+	@Path("foo")
+	public GraphNode foo() {
+		return new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
 	}
 	
 	public Set<GraphNode> getUsers() {
