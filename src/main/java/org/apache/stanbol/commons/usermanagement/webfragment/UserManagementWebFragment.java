@@ -48,6 +48,9 @@ import freemarker.cache.TemplateLoader;
 public class UserManagementWebFragment implements WebFragment {
 
 	@Reference
+	private FreeMarkerMBW freeMarkerMBW;
+	
+	@Reference
 	private UserManager userManager;
 	
 	private static final String NAME = "user-management";
@@ -70,13 +73,15 @@ public class UserManagementWebFragment implements WebFragment {
 	@Override
 	public Set<Class<?>> getJaxrsResourceClasses() {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
-		classes.add(FreeMarkerMBW.class);
 		return classes;
 	}
 
 	@Override
 	public Set<Object> getJaxrsResourceSingletons() {
-		return Collections.singleton((Object)userManager);
+		Set<Object> instances = new HashSet<Object>();
+		instances.add(userManager);
+		instances.add(freeMarkerMBW);
+		return instances;
 	}
 
 	@Override

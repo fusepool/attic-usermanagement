@@ -3,7 +3,6 @@ package org.apache.stanbol.commons.usermanagement.mbw;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -16,21 +15,27 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.stanbol.commons.ldpathtemplate.LdRenderer;
 
 import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
+@Component
+@Service(FreeMarkerMBW.class)
 public class FreeMarkerMBW implements MessageBodyWriter<GraphNode> {
 
+	@Reference
+	private LdRenderer ldRenderer;
+	
 	public class Prefix implements TemplateHashModel {
 
 		private String path;
@@ -123,7 +128,7 @@ public class FreeMarkerMBW implements MessageBodyWriter<GraphNode> {
 		// Specify how templates will see the data-model. This is an advanced topic...
 		// but just use this:
 		
-		cfg.setObjectWrapper(new DefaultObjectWrapper() {
+		/*cfg.setObjectWrapper(new DefaultObjectWrapper() {
 			
 			@Override
 			public TemplateModel wrap(final Object wrapped) throws TemplateModelException {
@@ -160,19 +165,21 @@ public class FreeMarkerMBW implements MessageBodyWriter<GraphNode> {
 			public String toString() {
 				return "Graphnode Object Wrapper";
 			}
-		});  
+		});*/  
 		
 		
 
 		  
-		Template temp = cfg.getTemplate("test.ftl"); 
-		//entityStream.write("hello world!".getBytes());
+		Template temp = cfg.getTemplate("test.ftl");
 		Writer out = new OutputStreamWriter(entityStream);
-		try {
+		ldRenderer.render(t, temp, out);
+		//entityStream.write("hello world!".getBytes());
+		
+		/*try {
 			temp.process(t, out);
 		} catch (TemplateException e) {
 			throw new RuntimeException();
-		}
+		}*/
 		out.flush();  
 		
 	}

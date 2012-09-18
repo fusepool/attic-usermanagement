@@ -9,12 +9,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -35,7 +38,9 @@ public class UserManager {
 	@GET
 	@Path("foo")
 	public GraphNode foo() {
-		return new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
+		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
+		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
+		return graphNode;
 	}
 	
 	public Set<GraphNode> getUsers() {
