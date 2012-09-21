@@ -12,13 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.stanbol.commons.ldpathtemplate.LdRenderer;
 import org.osgi.framework.BundleContext;
 
 @Component
@@ -31,6 +35,12 @@ public class WebConsolePlugin extends
 
 	@Reference
 	private UserManager userManager;
+	
+	@Reference
+	private LdRenderer ldRenderer;
+	
+	@Reference
+	private Serializer serializer;
 	
 	public static final String NAME = "User Management";
 	public static final String LABEL = "usermanagement";
@@ -45,16 +55,22 @@ public class WebConsolePlugin extends
 
 	protected void renderContent(HttpServletRequest req,
 			HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter pw = response.getWriter();
+		
+		//TODO enhance LDPath template to support rdf:Lists and return list
+		ldRenderer.render(userManager.getUserType(), 
+				"webConsole.ftl", response.getWriter());
+		serializer.serialize(System.out, userManager.getUserType().getGraph(), SupportedFormat.TURTLE);
+		/*PrintWriter pw = response.getWriter();
 		pw.write("<h1>List of users:</h1>");
 		for (GraphNode user: userManager.getUsers()) {
 			renderUser(pw, user);
 		}
-		renderUserForm(pw, new GraphNode(new BNode(), new SimpleMGraph()));
+		renderUserForm(pw, new GraphNode(new BNode(), new SimpleMGraph()));*/
 	}
 
 	private void renderUser(PrintWriter pw, GraphNode user) {
 		pw.write("<p> User:"+user.getLiterals(PLATFORM.userName).next().getLexicalForm()+"</p>");
+		pw.write("<p> Type:"+user.getObjectNodes(RDF.type).next()+"</p>");
 	}
 	
 	private void renderUserForm(PrintWriter pw, GraphNode user) {
