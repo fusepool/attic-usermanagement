@@ -26,6 +26,7 @@ import org.apache.clerezza.rdf.utils.UnionMGraph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.stanbol.commons.ldviewable.LdViewable;
 
 @Component
 @Service(UserManager.class)
@@ -45,6 +46,18 @@ public class UserManager {
 		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
 		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
 		return graphNode;
+	}
+	
+	@GET
+	@Path("foo2")
+	public LdViewable foo2() {
+		return new LdViewable("tests/test.ftl", foo());
+	}
+	
+	@GET
+	@Path("foo3")
+	public LdViewable foo4() {
+		return new LdViewable("test.ftl", foo(), this.getClass());
 	}
 	
 	@GET

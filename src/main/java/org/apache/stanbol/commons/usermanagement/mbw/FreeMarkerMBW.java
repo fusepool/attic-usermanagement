@@ -6,8 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -22,11 +20,6 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.stanbol.commons.ldpathtemplate.LdRenderer;
 import org.apache.stanbol.commons.usermanagement.Ontology;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.SimpleHash;
-import freemarker.template.Template;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -84,9 +77,9 @@ public class FreeMarkerMBW implements MessageBodyWriter<GraphNode> {
 			WebApplicationException {
 		Writer out = new OutputStreamWriter(entityStream);
 		if (t.hasProperty(RDF.type, Ontology.EditableUser)) {
-			ldRenderer.render(t, "rdftypes/EditableUser.ftl", out);
+			ldRenderer.render(t, "html/rdftypes/EditableUser.ftl", out);
 		} else {
-			ldRenderer.render(t, "rdftypes/Resource.ftl", out);
+			ldRenderer.render(t, "html/rdftypes/Resource.ftl", out);
 		}
 		out.flush();  
 		
