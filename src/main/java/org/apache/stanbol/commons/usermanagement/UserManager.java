@@ -40,8 +40,6 @@ public class UserManager {
 		return "hello";
 	}
 	
-	@GET
-	@Path("foo")
 	public GraphNode foo() {
 		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
 		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
@@ -72,7 +70,11 @@ public class UserManager {
 	
 	@GET
 	@Path("view-user") 
-	public GraphNode getUser(@QueryParam("userName") String userName) {
+	public LdViewable viewUser(@QueryParam("userName") String userName) {
+		return new LdViewable("EditableUser.ftl", getUser(userName), this.getClass());
+	}
+	
+	private GraphNode getUser(@QueryParam("userName") String userName) {
 		Iterator<Triple> iter = systemGraph.filter(null, PLATFORM.userName, new PlainLiteralImpl(userName));
 		if (!iter.hasNext()) {
 			return null;

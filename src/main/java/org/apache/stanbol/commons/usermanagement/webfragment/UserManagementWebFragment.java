@@ -18,7 +18,6 @@
 package org.apache.stanbol.commons.usermanagement.webfragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +27,6 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.stanbol.commons.usermanagement.UserManager;
-import org.apache.stanbol.commons.usermanagement.mbw.FreeMarkerMBW;
 import org.apache.stanbol.commons.web.base.LinkResource;
 import org.apache.stanbol.commons.web.base.NavigationLink;
 import org.apache.stanbol.commons.web.base.ScriptResource;
@@ -40,16 +38,13 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.TemplateLoader;
 
 /**
- * Statically define the list of available resources and providers to be
+ * Statsically define the list of available resources and providers to be
  * contributed to the the Stanbol JAX-RS Endpoint.
  */
 @Component(immediate = true, metatype = true)
 @Service
 public class UserManagementWebFragment implements WebFragment {
 
-	@Reference
-	private FreeMarkerMBW freeMarkerMBW;
-	
 	@Reference
 	private UserManager userManager;
 	
@@ -80,7 +75,6 @@ public class UserManagementWebFragment implements WebFragment {
 	public Set<Object> getJaxrsResourceSingletons() {
 		Set<Object> instances = new HashSet<Object>();
 		instances.add(userManager);
-		instances.add(freeMarkerMBW);
 		return instances;
 	}
 
