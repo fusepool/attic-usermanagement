@@ -40,32 +40,34 @@ public class UserManager {
 		return "hello";
 	}
 	
-	public GraphNode foo() {
-		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
-		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
-		return graphNode;
-	}
-	
-	@GET
-	@Path("foo2")
-	public LdViewable foo2() {
-		return new LdViewable("tests/test.ftl", foo());
-	}
-	
-	@GET
-	@Path("foo3")
-	public LdViewable foo4() {
-		return new LdViewable("test.ftl", foo(), this.getClass());
-	}
+//	public GraphNode foo() {
+//		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
+//		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
+//		return graphNode;
+//	}
+//	
+//	@GET
+//	@Path("foo2")
+//	public LdViewable foo2() {
+//		return new LdViewable("tests/test.ftl", foo());
+//	}
+//	
+//	@GET
+//	@Path("foo3")
+//	public LdViewable foo4() {
+//		return new LdViewable("test.ftl", foo(), this.getClass());
+//	}
 	
 	@GET
 	@Path("edit-user")
-	public GraphNode editUser(@QueryParam("userName") String userName) {
-		GraphNode user = getUser(userName);
-		MGraph resultGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(user.getNode(), new UnionMGraph(resultGraph, user.getGraph()));
-		result.addProperty(RDF.type, Ontology.EditableUser);
-		return result;
+        //Shoudl return LDViewable
+	public LdViewable editUser(@QueryParam("userName") String userName) {
+            return new LdViewable("EditableUser.ftl", getUser(userName), this.getClass());
+//		GraphNode user = getUser(userName);
+//		MGraph resultGraph = new SimpleMGraph();
+//		GraphNode result = new GraphNode(user.getNode(), new UnionMGraph(resultGraph, user.getGraph()));
+//		result.addProperty(RDF.type, Ontology.EditableUser);
+//		return LdViewable("EditableUser.ftl",);
 	}
 	
 	@GET

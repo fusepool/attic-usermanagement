@@ -48,6 +48,9 @@ public class WebConsolePlugin extends
 	protected void renderContent(HttpServletRequest req,
 			HttpServletResponse response) throws ServletException, IOException {
 		
+            
+            
+            
 		//TODO enhance LDPath template to support rdf:Lists and return list
 		ldRenderer.render(userManager.getUserType(), 
 				"html/webConsole.ftl", response.getWriter());
