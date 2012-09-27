@@ -2,38 +2,31 @@ package org.apache.stanbol.commons.usermanagement;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
-import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
-import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.MGraphUtils;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
 import org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -102,21 +95,23 @@ public class UserManager {
 	 *
 	 * @param graphUri the graph within which the replacement has to take place or null
 	 * for the content graph
-	 * @param assertedString the asserted Graph as RDF/XML
-	 * @param revokedString the revoked Graph as RDF/XML
+	 * @param assertedString the asserted Graph
+	 * @param revokedString the revoked Graph
+	 * @param format the media-type of the rdf format in which the asserted and revoked graph are serialized, default: text/turtle
 	 */
 	@POST
 	@Path("replace-subgraph")
 	public void replaceSubGraph(@QueryParam("graph") UriRef graphUri,
 			@FormParam("assert") String assertedString,
-			@FormParam("revoke") String revokedString) {
+			@FormParam("revoke") String revokedString, 
+			@FormParam("format") @DefaultValue("text/turtle") String format) {
 		final Graph assertedGraph;
 		final Graph revokedGraph;
 		try {
 			assertedGraph = parser.parse(new ByteArrayInputStream(assertedString.getBytes("utf-8")), 
-					SupportedFormat.RDF_XML);
+					format);
 			revokedGraph = parser.parse(new ByteArrayInputStream(assertedString.getBytes("utf-8")), 
-					SupportedFormat.RDF_XML);
+					format);
 		} catch (IOException ex) {
 			log.error("reading graph {}", ex);
 			throw new WebApplicationException(ex, 500);
