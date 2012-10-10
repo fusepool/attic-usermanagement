@@ -57,6 +57,15 @@ public class WebConsolePlugin extends
 		serializer.serialize(System.out, userManager.getUserType().getGraph(), SupportedFormat.TURTLE);
 
 	}
+	
+	protected String[] getCssReferences() {
+        String[] result = new String[1];
+        //this is to use the stanbol way for static resources
+        //http://felix.apache.org/site/providing-resources.html describes the webconsole way
+        //TODO make sure things work when stanbol is not in root
+        result[0] = "../../static/user-management/styles/webconsole.css";
+		return result;
+    }
 
 	public void activateBundle(BundleContext bundleContext) {
 		super.activate(bundleContext);
