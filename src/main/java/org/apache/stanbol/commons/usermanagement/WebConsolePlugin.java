@@ -53,7 +53,7 @@ public class WebConsolePlugin extends
             
 		//TODO enhance LDPath template to support rdf:Lists and return list
 		ldRenderer.render(userManager.getUserType(), 
-				"html/webConsole.ftl", response.getWriter());
+				"html/org/apache/stanbol/commons/usermanagement/webConsole.ftl", response.getWriter());
 		serializer.serialize(System.out, userManager.getUserType().getGraph(), SupportedFormat.TURTLE);
 
 	}
