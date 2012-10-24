@@ -50,8 +50,7 @@ public class UserManagementWebFragment implements WebFragment {
 	
 	private static final String NAME = "user-management";
 
-	//private static final String TEMPLATE_PATH = "/org/apache/stanbol/contenthub/web/templates";
-	//private static final String STATIC_RESOURCE_PATH = "/org/apache/stanbol/contenthub/web/static";
+	private static final String STATIC_RESOURCE_PATH = "/org/apache/stanbol/commons/usermanagement/webfragment";
 
 	private BundleContext bundleContext;
 
@@ -80,7 +79,7 @@ public class UserManagementWebFragment implements WebFragment {
 
 	@Override
 	public String getStaticResourceClassPath() {
-		return "foobar";
+		return "/org/apache/stanbol/commons/usermanagement/webfragment";
 	}
 
 	@Override
@@ -91,32 +90,18 @@ public class UserManagementWebFragment implements WebFragment {
 	@Override
 	public List<LinkResource> getLinkResources() {
 		List<LinkResource> resources = new ArrayList<LinkResource>();
-/*		resources.add(new LinkResource("stylesheet", "style/contenthub.css",
-				this, 0));
-		resources.add(new LinkResource("stylesheet",
-				"style/jquery-ui-1.8.11.custom.css", this, 1));*/
 		return resources;
 	}
 
 	@Override
 	public List<ScriptResource> getScriptResources() {
 		List<ScriptResource> resources = new ArrayList<ScriptResource>();
-		/*resources.add(new ScriptResource("text/javascript",
-				"scripts/prettify/prettify.js", this, 0));
-		resources.add(new ScriptResource("text/javascript", "scripts/jit.js",
-				this, 1));
-		resources.add(new ScriptResource("text/javascript",
-				"scripts/jquery-1.5.1.min.js", this, 2));
-		resources.add(new ScriptResource("text/javascript",
-				"scripts/jquery-ui-1.8.11.custom.min.js", this, 3));*/
 		return resources;
 	}
 
 	@Override
 	public List<NavigationLink> getNavigationLinks() {
 		List<NavigationLink> links = new ArrayList<NavigationLink>();
-		/*links.add(new NavigationLink("contenthub/contenthub/store",
-				"/contenthub", "/imports/contenthubDescription.ftl", 20));*/
 		return links;
 	}
 
