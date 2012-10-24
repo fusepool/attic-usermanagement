@@ -2,23 +2,23 @@
 <@namespace permission="http://clerezza.org/2008/10/permission#" />
 <@namespace sioc="http://rdfs.org/sioc/ns#" />
 
-<form>
-User-Name: <input type="text" value="<@ldpath path="platform:userName :: xsd:string"/>" /><br/>
+<form method="post" action="/user-management/store-user">
+User-Name: <input type="text" name="userName" value="<@ldpath path="platform:userName :: xsd:string"/>" /><br/>
 <#assign mbox>
 <@ldpath path="foaf:mbox" />
 </#assign>
 <#assign email>
 <#if mbox != "">${mbox?substring(7)}</#if>
 </#assign>
-Email : <input type="text" value="${email}" /><br/>
-
-	Permssions: <ul>
+Email : <input type="text" name="email" value="${email}" /><br/>
+Password : <input type="password" name="password" value="" /><br/>
+	Permissions: <ul>
 	<@ldpath path="fn:sort(permission:hasPermission)">
 		<#assign permission>
 		<@ldpath path="permission:javaPermissionEntry :: xsd:string"/>
 		</#assign>
 		<li class="permission">
-		<input type="text" value="${permission?html}" />
+		<input type="text" name="permission[]" value="${permission?html}" />
 		</li>
 	</@ldpath>
 	</ul>
@@ -31,5 +31,5 @@ Email : <input type="text" value="${email}" /><br/>
 		</li>
 	</@ldpath>
 	</ol>
-
+ <input type="submit" value="Submit">
 </form>

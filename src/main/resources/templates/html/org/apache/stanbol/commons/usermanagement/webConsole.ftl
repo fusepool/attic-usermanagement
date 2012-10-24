@@ -5,27 +5,28 @@ Here are the users:<br/>
 
 <@ldpath path="fn:sort(^rdf:type)">
 <div class="user">
-	User-Name: <@ldpath path="platform:userName :: xsd:string"/><br/>
-	<!-- todo add webapp prefix -->
 	<a href="/user-management/edit-user?userName=<@ldpath path="platform:userName :: xsd:string"/>" >
 	edit
 	</a>
-	Permssions: <ul>
+	User-Name: <@ldpath path="platform:userName :: xsd:string"/><br/>
+	<!-- todo add webapp prefix -->
+
+	Permssions: <ul style="list-style-type: disc;">
 	<@ldpath path="fn:sort(permission:hasPermission)">
-		<li class="permission">
+		<li class="permission" style="list-style-type: disc;">
 		<@ldpath path="permission:javaPermissionEntry :: xsd:string"/>
 		</li>
 	</@ldpath>
 	</ul>
 	Groups:
-	<ol>
+	<ul>
 	<@ldpath path="fn:sort(sioc:has_function)">
-		<li class="permission">
+		<li class="permission" style="list-style-type: square;">
 		<@ldpath path="dc:title :: xsd:string"/>
 		</li>
 	</@ldpath>
-	</ol>
-	<#include "included.ftl">
+	</ul>
+<!-- 	<#include "EditableUser.ftl"> -->
 </div>
 </@ldpath>
 

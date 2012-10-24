@@ -1,6 +1,7 @@
 package org.apache.stanbol.commons.usermanagement;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -24,6 +25,8 @@ import org.osgi.framework.BundleContext;
 		@Property(name = "felix.webconsole.title", value = "User Management") })
 public class WebConsolePlugin extends
 		org.apache.felix.webconsole.AbstractWebConsolePlugin {
+
+	private static final String STATIC_PREFIX = "/usermanagement/res/";
 
 	@Reference
 	private UserManager userManager;
@@ -65,5 +68,14 @@ public class WebConsolePlugin extends
 	public void deactivate() {
 		super.deactivate();
 
+	}
+	
+	public URL getResource(String path){
+		if(path.startsWith(STATIC_PREFIX)){
+			return this.getClass().getResource(path.substring(STATIC_PREFIX.length()));
+			
+		}else {
+			return null;
+		}
 	}
 }

@@ -1,7 +1,10 @@
 package org.apache.stanbol.commons.usermanagement;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -14,6 +17,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.Graph;
@@ -22,6 +29,8 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -48,9 +57,15 @@ public class UserManager {
 	@Reference
 	private Parser parser;
 	
+	@Reference
+	private Serializer serializer;
+	
 	@GET
-	public String index() {
-		return "hello";
+	public String index() throws UnsupportedEncodingException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		serializer.serialize(baos, systemGraph, SupportedFormat.TURTLE);
+		String serialized = new String(baos.toByteArray(),"utf-8");
+		return serialized;
 	}
 	
 //	public GraphNode foo() {
@@ -87,6 +102,13 @@ public class UserManager {
 	@Path("view-user") 
 	public LdViewable viewUser(@QueryParam("userName") String userName) {
 		return new LdViewable("EditableUser.ftl", getUser(userName), this.getClass());
+	}
+	
+	@POST
+	@Path("store-user")
+	public Response storeUser(@Context UriInfo uriInfo, @FormParam("userName") String userName) {
+        URI pageUri = uriInfo.getBaseUriBuilder().path("/user-management").build();
+        return Response.temporaryRedirect(pageUri).build();
 	}
 	
 	/**
