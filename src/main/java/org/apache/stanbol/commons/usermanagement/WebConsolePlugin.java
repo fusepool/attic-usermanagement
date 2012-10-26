@@ -16,6 +16,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.stanbol.commons.ldpathtemplate.LdRenderer;
+import org.apache.stanbol.commons.usermanagement.resource.UserResource;
 import org.osgi.framework.BundleContext;
 
 @Component
@@ -29,7 +30,7 @@ public class WebConsolePlugin extends
 	private static final String STATIC_PREFIX = "/usermanagement/res/";
 
 	@Reference
-	private UserManager userManager;
+	private UserResource userManager;
 	
 	@Reference
 	private LdRenderer ldRenderer;

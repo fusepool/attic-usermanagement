@@ -26,7 +26,7 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.stanbol.commons.usermanagement.UserManager;
+import org.apache.stanbol.commons.usermanagement.resource.UserResource;
 import org.apache.stanbol.commons.web.base.LinkResource;
 import org.apache.stanbol.commons.web.base.NavigationLink;
 import org.apache.stanbol.commons.web.base.ScriptResource;
@@ -46,7 +46,7 @@ import freemarker.cache.TemplateLoader;
 public class UserManagementWebFragment implements WebFragment {
 
 	@Reference
-	private UserManager userManager;
+	private UserResource userManager;
 	
 	private static final String NAME = "user-management";
 
