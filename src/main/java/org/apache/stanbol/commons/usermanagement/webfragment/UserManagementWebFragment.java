@@ -79,7 +79,7 @@ public class UserManagementWebFragment implements WebFragment {
 
 	@Override
 	public String getStaticResourceClassPath() {
-		return "/org/apache/stanbol/commons/usermanagement/webfragment";
+		return STATIC_RESOURCE_PATH;
 	}
 
 	@Override
