@@ -15,6 +15,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -67,30 +68,18 @@ public class UserResource {
 		String serialized = new String(baos.toByteArray(),"utf-8");
 		return serialized;
 	}
-	
-//	public GraphNode foo() {
-//		GraphNode graphNode = new GraphNode(new UriRef("http://foo/"), new SimpleMGraph());
-//		graphNode.addProperty(RDFS.label, new PlainLiteralImpl("That's the label", new Language("en")));
-//		return graphNode;
-//	}
-//	
-//	@GET
-//	@Path("foo2")
-//	public LdViewable foo2() {
-//		return new LdViewable("tests/test.ftl", foo());
-//	}
-//	
-//	@GET
-//	@Path("foo3")
-//	public LdViewable foo4() {
-//		return new LdViewable("test.ftl", foo(), this.getClass());
-//	}
-	
+        
+        @GET
+        @Path("users")
+        public LdViewable listUsers(){
+            return new LdViewable("listUser.ftl", getUserType(), this.getClass());
+        }
+        
 	@GET
-	@Path("edit-user")
+	@Path("user/{username}")
         //Shoudl return LDViewable
-	public LdViewable editUser(@QueryParam("userName") String userName) {
-            return new LdViewable("EditableUser.ftl", getUser(userName), this.getClass());
+	public LdViewable editUser(@PathParam("username") String userName) {
+            return new LdViewable("editUser.ftl", getUser(userName), this.getClass());
 //		GraphNode user = getUser(userName);
 //		MGraph resultGraph = new SimpleMGraph();
 //		GraphNode result = new GraphNode(user.getNode(), new UnionMGraph(resultGraph, user.getGraph()));
@@ -101,7 +90,7 @@ public class UserResource {
 	@GET
 	@Path("view-user") 
 	public LdViewable viewUser(@QueryParam("userName") String userName) {
-		return new LdViewable("EditableUser.ftl", getUser(userName), this.getClass());
+		return new LdViewable("edit.ftl", getUser(userName), this.getClass());
 	}
 	
 	@POST
