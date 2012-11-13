@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
@@ -18,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -25,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
@@ -42,6 +46,8 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.stanbol.commons.ldviewable.LdViewable;
+import org.apache.clerezza.rdf.ontologies.PERMISSION;
+import org.apache.stanbol.commons.security.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,14 +83,8 @@ public class UserResource {
         
 	@GET
 	@Path("user/{username}")
-        //Shoudl return LDViewable
 	public LdViewable editUser(@PathParam("username") String userName) {
             return new LdViewable("editUser.ftl", getUser(userName), this.getClass());
-//		GraphNode user = getUser(userName);
-//		MGraph resultGraph = new SimpleMGraph();
-//		GraphNode result = new GraphNode(user.getNode(), new UnionMGraph(resultGraph, user.getGraph()));
-//		result.addProperty(RDF.type, Ontology.EditableUser);
-//		return LdViewable("EditableUser.ftl",);
 	}
 	
 	@GET
@@ -93,12 +93,51 @@ public class UserResource {
 		return new LdViewable("edit.ftl", getUser(userName), this.getClass());
 	}
 	
+	/**
+	 * takes edit form data and pushes into store
+	 * so far only password change implemented
+	 * (others should be straightforward delete/inserts)
+	 */
 	@POST
 	@Path("store-user")
-	public Response storeUser(@Context UriInfo uriInfo, @FormParam("userName") String userName) {
-        URI pageUri = uriInfo.getBaseUriBuilder().path("/user-management").build();
-        return Response.temporaryRedirect(pageUri).build();
+	public Response storeUser(@Context UriInfo uriInfo, @FormParam("userName") String userName, @FormParam("email") String email,
+			@FormParam("password") String password, @FormParam("permission[]") List<String> permission) {
+
+        GraphNode userNode = getUser(userName);
+        
+		String passwordSha1 = PasswordUtil.convertPassword(password);
+
+        // System.out.println("new password = "+password);
+        // System.out.println("new passwordSha1 = "+passwordSha1);
+        
+        System.out.println("BEFORE ========================================================");
+        serializer.serialize(System.out, userNode.getGraph(), SupportedFormat.TURTLE);
+            
+        Iterator<Literal> oldPasswordsSha1 = userNode.getLiterals(PERMISSION.passwordSha1);
+        Literal oldPasswordSha1 = oldPasswordsSha1.next(); 
+        // no exception, if there is no value, let it break totally, if more than one - it is broken elsewhere
+        
+        userNode.addPropertyValue(PERMISSION.passwordSha1, passwordSha1);
+        // workaround for possible issue in verification re. PlainLiteral vs. xsd:string 
+        // userNode.addProperty(PERMISSION.passwordSha1, new PlainLiteralImpl(passwordSha1));
+        // most likely not a problem, and the above will work
+        
+        userNode.deleteProperty(PERMISSION.passwordSha1, oldPasswordSha1);
+
+        System.out.println("AFTER ========================================================");
+        serializer.serialize(System.out, userNode.getGraph(), SupportedFormat.TURTLE);
+        
+        URI pageUri = uriInfo.getBaseUriBuilder().path("/system/console").build();
+        
+        // header Cache-control: no-cache, just in case intermediaries are holding onto old stuff
+        CacheControl cc = new CacheControl();
+        cc.setNoCache(true); 
+        
+        // see other my not be the best response, but does seem the best given the jax-rs things available
+        return Response.seeOther(pageUri).cacheControl(cc).build();
 	}
+	
+	
 	
 	/**
 	 * replaces the subgraph serialized with RDF/XML in <code>revokedString
